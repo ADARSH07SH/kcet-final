@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Predictor</title>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <article>
+        <h1 id="tag">COLLEGE PREDICTOR</h1>
+        <form id="collegeForm" method="GET" action="/list">
+            <label for="rank">Rank:</label>
+            <input type="text" id="rank" name="rank" required><br><br>
+
+            <label for="category">Category:</label>
+            <select id="category" name="category" required>
+                <option value="1G">1G</option>
+                <option value="1K">1K</option>
+                <option value="1R">1R</option>
+                <option value="2AG">2AG</option>
+                <option value="2AK">2AK</option>
+                <option value="2AR">2AR</option>
+                <option value="2BG">2BG</option>
+                <option value="2BK">2BK</option>
+                <option value="2BR">2BR</option>
+                <option value="3AG">3AG</option>
+                <option value="3AK">3AK</option>
+                <option value="3AR">3AR</option>
+                <option value="3BG">3BG</option>
+                <option value="3BK">3BK</option>
+                <option value="3BR">3BR</option>
+                <option value="GM">GM</option>
+                <option value="GMK">GMK</option>
+                <option value="GMR">GMR</option>
+                <option value="SCG">SCG</option>
+                <option value="SCK">SCK</option>
+                <option value="SCR">SCR</option>
+                <option value="STG">STG</option>
+                <option value="STK">STK</option>
+                <option value="STR">STR</option>
+            </select><br><br>
+
+            <label for="preferredCourse">Preferred Course:</label>
+            <select id="preferredCourse" name="preferredCourse" required>
+                <option value="ALL">ALL</option>
+                <option value="IT">IT</option>
+                <option value="EC">EC</option>
+                <option value="TRENDING">TRENDING</option>
+            </select><br><br>
+
+            <button type="submit" id="submitButton">SUBMIT</button>
+        </form>
+    </article>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+</body>
+</html>
