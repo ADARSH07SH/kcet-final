@@ -1,15 +1,19 @@
 const express = require("express");
 const path = require("path");
 const mysql = require('mysql2');
+const dotenv = require('dotenv');
+
+dotenv.config(); // Load environment variables from .env file
 
 // MySQL database connection setup
 const connection = mysql.createConnection({
-    host: 'mysql-288f8580-kcet.h.aivencloud.com',
-    user: 'avnadmin',
-    database: 'defaultdb',
-    password: 'AVNS_WmTuVMDXsf-W6hNnScc',
-    port: 12795,
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    database: process.env.DB_DATABASE,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
 });
+
 
 const app = express();
 const port = 8000;
