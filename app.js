@@ -1,20 +1,21 @@
-
 const express = require("express");
 const path = require("path");
 const mysql = require('mysql2');
 
-
-
 // MySQL database connection setup
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    database: 'adarsh',
-    password: 'adarsh1947' // Replace with your MySQL password
+    host: 'mysql-288f8580-kcet.h.aivencloud.com',
+    user: 'avnadmin',
+    database: 'defaultdb',
+    password: 'AVNS_WmTuVMDXsf-W6hNnScc',
+    port: 12795,
+    ssl: {
+        ca: fs.readFileSync('/path/to/server-ca.pem') // Path to your CA certificate file
+    }
 });
 
 const app = express();
-const port = 8000;
+
 
 // Start the server
 app.listen(port, () => {
@@ -30,8 +31,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Parse URL-encoded bodies (as sent by HTML forms)
 app.use(express.urlencoded({ extended: true }));
-
-
 
 // Route for the rank page
 app.get("/", (req, res) => {
@@ -90,7 +89,7 @@ app.get("/list", (req, res) => {
             \`Course Name\`,
             \`${category}\`,
             90 AS ChanceOfGetting  -- Change 100 to 90 for the first query
-        FROM \`kcet\`.\`2023_1\`
+        FROM \`defaultdb\`.\`2023_1\`
         WHERE CAST(\`${category}\` AS SIGNED) >= ?
         ${courseFilter ? `AND \`Course Name\` IN (${courseFilter})` : ''}
         AND \`${category}\` != '--'
@@ -102,15 +101,15 @@ app.get("/list", (req, res) => {
             \`Course Name\`,
             \`${category}\`,
             60 AS ChanceOfGetting  -- Change 50 to 60 for the second query
-        FROM \`kcet\`.\`2023_2\`
+        FROM \`defaultdb\`.\`2023_2\`
         WHERE CAST(\`${category}\` AS SIGNED) >= ?
         ${courseFilter ? `AND \`Course Name\` IN (${courseFilter})` : ''}
         AND \`${category}\` != '--'
         AND NOT EXISTS (
-            SELECT 1 FROM \`kcet\`.\`2023_1\`
-            WHERE \`kcet\`.\`2023_1\`.\`College Name Not Found\` = \`kcet\`.\`2023_2\`.\`College Name Not Found\`
-            AND \`kcet\`.\`2023_1\`.\`Course Name\` = \`kcet\`.\`2023_2\`.\`Course Name\`
-            AND \`kcet\`.\`2023_1\`.\`${category}\` = \`kcet\`.\`2023_2\`.\`${category}\`
+            SELECT 1 FROM \`defaultdb\`.\`2023_1\`
+            WHERE \`defaultdb\`.\`2023_1\`.\`College Name Not Found\` = \`defaultdb\`.\`2023_2\`.\`College Name Not Found\`
+            AND \`defaultdb\`.\`2023_1\`.\`Course Name\` = \`defaultdb\`.\`2023_2\`.\`Course Name\`
+            AND \`defaultdb\`.\`2023_1\`.\`${category}\` = \`defaultdb\`.\`2023_2\`.\`${category}\`
         )
         
         UNION
@@ -120,21 +119,21 @@ app.get("/list", (req, res) => {
             \`Course Name\`,
             \`${category}\`,
             30 AS ChanceOfGetting  -- Change 10 to 30 for the third query
-        FROM \`kcet\`.\`2023_3\`
+        FROM \`defaultdb\`.\`2023_3\`
         WHERE CAST(\`${category}\` AS SIGNED) >= ?
         ${courseFilter ? `AND \`Course Name\` IN (${courseFilter})` : ''}
         AND \`${category}\` != '--'
         AND NOT EXISTS (
-            SELECT 1 FROM \`kcet\`.\`2023_1\`
-            WHERE \`kcet\`.\`2023_1\`.\`College Name Not Found\` = \`kcet\`.\`2023_3\`.\`College Name Not Found\`
-            AND \`kcet\`.\`2023_1\`.\`Course Name\` = \`kcet\`.\`2023_3\`.\`Course Name\`
-            AND \`kcet\`.\`2023_1\`.\`${category}\` = \`kcet\`.\`2023_3\`.\`${category}\`
+            SELECT 1 FROM \`defaultdb\`.\`2023_1\`
+            WHERE \`defaultdb\`.\`2023_1\`.\`College Name Not Found\` = \`defaultdb\`.\`2023_3\`.\`College Name Not Found\`
+            AND \`defaultdb\`.\`2023_1\`.\`Course Name\` = \`defaultdb\`.\`2023_3\`.\`Course Name\`
+            AND \`defaultdb\`.\`2023_1\`.\`${category}\` = \`defaultdb\`.\`2023_3\`.\`${category}\`
         )
         AND NOT EXISTS (
-            SELECT 1 FROM \`kcet\`.\`2023_2\`
-            WHERE \`kcet\`.\`2023_2\`.\`College Name Not Found\` = \`kcet\`.\`2023_3\`.\`College Name Not Found\`
-            AND \`kcet\`.\`2023_2\`.\`Course Name\` = \`kcet\`.\`2023_3\`.\`Course Name\`
-            AND \`kcet\`.\`2023_2\`.\`${category}\` = \`kcet\`.\`2023_3\`.\`${category}\`
+            SELECT 1 FROM \`defaultdb\`.\`2023_2\`
+            WHERE \`defaultdb\`.\`2023_2\`.\`College Name Not Found\` = \`defaultdb\`.\`2023_3\`.\`College Name Not Found\`
+            AND \`defaultdb\`.\`2023_2\`.\`Course Name\` = \`defaultdb\`.\`2023_3\`.\`Course Name\`
+            AND \`defaultdb\`.\`2023_2\`.\`${category}\` = \`defaultdb\`.\`2023_3\`.\`${category}\`
         )
         ORDER BY CAST(\`${category}\` AS SIGNED) ASC
         LIMIT ${itemsPerPage} OFFSET ${offset}
@@ -151,13 +150,13 @@ app.get("/list", (req, res) => {
             SELECT COUNT(*) AS total
             FROM (
                 SELECT \`College Name Not Found\`, \`Course Name\`, \`${category}\`
-                FROM \`kcet\`.\`2023_1\`
+                FROM \`defaultdb\`.\`2023_1\`
                 UNION
                 SELECT \`College Name Not Found\`, \`Course Name\`, \`${category}\`
-                FROM \`kcet\`.\`2023_2\`
+                FROM \`defaultdb\`.\`2023_2\`
                 UNION
                 SELECT \`College Name Not Found\`, \`Course Name\`, \`${category}\`
-                FROM \`kcet\`.\`2023_3\`
+                FROM \`defaultdb\`.\`2023_3\`
             ) AS combined
             WHERE CAST(\`${category}\` AS SIGNED) >= ?
             ${courseFilter ? `AND \`Course Name\` IN (${courseFilter})` : ''}
