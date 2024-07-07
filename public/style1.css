@@ -1,4 +1,4 @@
-/* styles.css */
+/* style1.css */
 
 body {
     font-family: "Poppins", sans-serif;
@@ -38,12 +38,14 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    table-layout: fixed; /* Ensure table width remains fixed */
 }
 
 th, td {
     border: 1px solid black;
     padding: 8px;
     text-align: left;
+    word-wrap: break-word; /* Wrap text within cells */
 }
 
 th {

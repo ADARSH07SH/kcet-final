@@ -129,3 +129,134 @@ select::-webkit-scrollbar-thumb:hover {
     }
 }
 
+/* Global styles */
+body {
+    background-color: #20262C;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Poppins", sans-serif;
+    text-align: center;
+}
+
+article {
+    width: 90%;
+    max-width: 600px;
+    background-color: #2f3740;
+    padding: 7%;
+    border-radius: 1em;
+    box-shadow: 1px 2px 8px rgb(29, 28, 4);
+    transition: box-shadow 0.4s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+article:hover {
+    box-shadow: 1px 2px 4px rgb(29, 28, 4); /* Less prominent shadow */
+}
+
+#tag {
+    background-color: #455260;
+    color: #beff00;
+    font-weight: bold;
+    padding: .2em 1em;
+    border-radius: 0.4em;
+    margin-bottom: 1em;
+}
+
+form {
+    width: 100%;
+}
+
+label {
+    color: #beff00;
+    display: block;
+    margin-bottom: 0.5em;
+    text-align: left;
+}
+
+input, select {
+    width: 100%;
+    padding: 0.8em; /* Increased height for inputs */
+    margin-bottom: 0.8em; /* Reduced top margin for inputs */
+    border-radius: 0.4em;
+    border: none;
+    background-color: #455260;
+    color: white;
+    font-size: 1em;
+}
+
+/* Ensure input retains background color on focus, active, and valid states */
+input:focus, input:active, input:valid {
+    background-color: #455260;
+    color: white; /* Ensure text remains visible */
+}
+
+select {
+    max-height: 8em; /* Adjust height as needed */
+    overflow: auto;
+}
+
+/* Custom scrollbar styling */
+select::-webkit-scrollbar {
+    width: 12px;
+}
+
+select::-webkit-scrollbar-track {
+    background: #2f3740;
+    border-radius: 0.4em;
+}
+
+select::-webkit-scrollbar-thumb {
+    background-color: #beff00;
+    border-radius: 0.4em;
+    border: 3px solid #2f3740;
+}
+
+select::-webkit-scrollbar-thumb:hover {
+    background-color: #ffd700;
+}
+
+#submitButton {
+    background-color: #20262C;
+    color: #beff00;
+    padding: 0.8em 1em; /* Adjusted padding for button */
+    border: none;
+    border-radius: 0.4em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1em;
+}
+
+#submitButton:hover {
+    background-color: #beff00;
+    color: #20262C;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+    article {
+        width: 90%;
+        padding: 5%;
+    }
+
+    input, select, #submitButton {
+        font-size: 0.9em;
+        padding: 0.6em; /* Adjusted padding for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    article {
+        width: 100%;
+        padding: 5%;
+    }
+
+    input, select, #submitButton {
+        font-size: 0.8em;
+        padding: 0.5em; /* Adjusted padding for even smaller screens */
+    }
+}
