@@ -7,15 +7,13 @@ const connection = mysql.createConnection({
     host: 'mysql-288f8580-kcet.h.aivencloud.com',
     user: 'avnadmin',
     database: 'defaultdb',
-    password: 'AVNS_WmTuVMDXsf-W6hNnScc',
+    password: 'AVNS_WmTuVMDXsf-W6hNnScc', // Replace with your MySQL password
     port: 12795,
-    ssl: {
-        ca: fs.readFileSync('/path/to/server-ca.pem') // Path to your CA certificate file
-    }
+    
 });
 
 const app = express();
-
+const port = 8000;
 
 // Start the server
 app.listen(port, () => {
@@ -82,7 +80,7 @@ app.get("/list", (req, res) => {
         `;
     }
 
-    // Adjust the SQL queries to set ChanceOfGetting percentages
+    // Adjust the SQL queries with proper column names and backticks for escaping
     let q = `
         SELECT 
             \`College Name Not Found\`,
@@ -139,29 +137,29 @@ app.get("/list", (req, res) => {
         LIMIT ${itemsPerPage} OFFSET ${offset}
     `;
 
+    let countQuery = `
+        SELECT COUNT(*) AS total
+        FROM (
+            SELECT \`College Name Not Found\`, \`Course Name\`, \`${category}\`
+            FROM \`defaultdb\`.\`2023_1\`
+            UNION
+            SELECT \`College Name Not Found\`, \`Course Name\`, \`${category}\`
+            FROM \`defaultdb\`.\`2023_2\`
+            UNION
+            SELECT \`College Name Not Found\`, \`Course Name\`, \`${category}\`
+            FROM \`defaultdb\`.\`2023_3\`
+        ) AS combined
+        WHERE CAST(\`${category}\` AS SIGNED) >= ?
+        ${courseFilter ? `AND \`Course Name\` IN (${courseFilter})` : ''}
+        AND \`${category}\` != '--'
+    `;
+
     connection.query(q, [rank, rank, rank], (err, results) => {
         if (err) {
             console.error('Error executing query: ' + err.stack);
             res.send('Error fetching data from database.');
             return;
         }
-
-        let countQuery = `
-            SELECT COUNT(*) AS total
-            FROM (
-                SELECT \`College Name Not Found\`, \`Course Name\`, \`${category}\`
-                FROM \`defaultdb\`.\`2023_1\`
-                UNION
-                SELECT \`College Name Not Found\`, \`Course Name\`, \`${category}\`
-                FROM \`defaultdb\`.\`2023_2\`
-                UNION
-                SELECT \`College Name Not Found\`, \`Course Name\`, \`${category}\`
-                FROM \`defaultdb\`.\`2023_3\`
-            ) AS combined
-            WHERE CAST(\`${category}\` AS SIGNED) >= ?
-            ${courseFilter ? `AND \`Course Name\` IN (${courseFilter})` : ''}
-            AND \`${category}\` != '--'
-        `;
 
         connection.query(countQuery, [rank], (countErr, countResults) => {
             if (countErr) {
