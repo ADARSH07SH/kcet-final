@@ -2,6 +2,9 @@ const express = require("express");
 const path = require("path");
 const mysql = require('mysql2');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const { PDFDocument, StandardFonts } = require('pdf-lib');
+const htmlToPdf = require('html-pdf');
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -13,7 +16,6 @@ const connection = mysql.createConnection({
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
 });
-
 
 const app = express();
 const port = 8000;
@@ -185,6 +187,205 @@ app.get("/list", (req, res) => {
         });
     });
 });
+
+
+// Route to handle PDF download
+app.get("/downloadPDF", (req, res) => {
+    const { rank, category, preferredCourse } = req.query;
+    const itemsPerPage = 40;
+    const courseFilter = getCourseFilter(preferredCourse);
+
+    // Query database for all data
+    let q = `
+        SELECT 
+            \`College_Name_Not_Found\` AS \`College Name Not Found\`,
+            \`Course_Name\` AS \`Course Name\`,
+            \`${category}\`
+        FROM (
+            SELECT 
+                \`College_Name_Not_Found\`,
+                \`Course_Name\`,
+                \`${category}\`,
+                90 AS ChanceOfGetting
+            FROM \`2023_1\`
+            WHERE CAST(\`${category}\` AS SIGNED) >= ?
+            ${courseFilter ? `AND \`Course_Name\` IN (${courseFilter})` : ''}
+            AND \`${category}\` != '--'
+            
+            UNION ALL
+            
+            SELECT 
+                \`College_Name_Not_Found\`,
+                \`Course_Name\`,
+                \`${category}\`,
+                60 AS ChanceOfGetting
+            FROM \`2023_2\`
+            WHERE CAST(\`${category}\` AS SIGNED) >= ?
+            ${courseFilter ? `AND \`Course_Name\` IN (${courseFilter})` : ''}
+            AND \`${category}\` != '--'
+            AND NOT EXISTS (
+                SELECT 1 FROM \`2023_1\`
+                WHERE \`2023_1\`.\`College_Name_Not_Found\` = \`2023_2\`.\`College_Name_Not_Found\`
+                AND \`2023_1\`.\`Course_Name\` = \`2023_2\`.\`Course_Name\`
+                AND \`2023_1\`.\`${category}\` = \`2023_2\`.\`${category}\`
+            )
+            
+            UNION ALL
+            
+            SELECT 
+                \`College_Name_Not_Found\`,
+                \`Course_Name\`,
+                \`${category}\`,
+                30 AS ChanceOfGetting
+            FROM \`2023_3\`
+            WHERE CAST(\`${category}\` AS SIGNED) >= ?
+            ${courseFilter ? `AND \`Course_Name\` IN (${courseFilter})` : ''}
+            AND \`${category}\` != '--'
+            AND NOT EXISTS (
+                SELECT 1 FROM \`2023_1\`
+                WHERE \`2023_1\`.\`College_Name_Not_Found\` = \`2023_3\`.\`College_Name_Not_Found\`
+                AND \`2023_1\`.\`Course_Name\` = \`2023_3\`.\`Course_Name\`
+                AND \`2023_1\`.\`${category}\` = \`2023_3\`.\`${category}\`
+            )
+            AND NOT EXISTS (
+                SELECT 1 FROM \`2023_2\`
+                WHERE \`2023_2\`.\`College_Name_Not_Found\` = \`2023_3\`.\`College_Name_Not_Found\`
+                AND \`2023_2\`.\`Course_Name\` = \`2023_3\`.\`Course_Name\`
+                AND \`2023_2\`.\`${category}\` = \`2023_3\`.\`${category}\`
+            )
+        ) AS combined
+        ORDER BY CAST(\`${category}\` AS SIGNED) ASC
+    `;
+
+    connection.query(q, [rank, rank, rank], (err, results) => {
+        if (err) {
+            console.error('Error executing query: ' + err.stack);
+            res.send('Error fetching data from database.');
+            return;
+        }
+
+        // Generate HTML for the PDF content
+        const htmlContent = generatePDFHtml(results);
+
+        // Generate PDF from HTML
+        htmlToPdf.create(htmlContent).toBuffer((pdfErr, buffer) => {
+            if (pdfErr) {
+                console.error('Error generating PDF: ' + pdfErr);
+                res.status(500).send('Error generating PDF');
+                return;
+            }
+
+            // Set response headers for PDF download
+            res.setHeader('Content-Disposition', `attachment; filename="college_list.pdf"`);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.send(buffer);
+        });
+    });
+});
+
+// Helper function to generate HTML content for PDF
+function generatePDFHtml(data) {
+    let htmlContent = `
+        <html>
+        <head>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    font-size: 12px;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 10px;
+                }
+                table, th, td {
+                    border: 1px solid black;
+                    padding: 8px;
+                }
+                th {
+                    background-color: #f2f2f2;
+                }
+                .center {
+                    text-align: center;
+                }
+            </style>
+        </head>
+        <body>
+            <h2>List of Colleges</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>College Name Not Found</th>
+                        <th>Course Name</th>
+                        <th>${category}</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    data.forEach(row => {
+        htmlContent += `
+            <tr>
+                <td>${row['College Name Not Found']}</td>
+                <td>${row['Course Name']}</td>
+                <td>${row[category]}</td>
+            </tr>
+        `;
+    });
+
+    htmlContent += `
+                </tbody>
+            </table>
+        </body>
+        </html>
+    `;
+
+    return htmlContent;
+}
+
+// Helper function to get course filter based on preferred course
+function getCourseFilter(preferredCourse) {
+    switch (preferredCourse) {
+        case 'IT':
+            return `
+                'AI Artificial Intelligence',
+                'CA CS (AI, Machine Learning)',
+                'CY CS- Cyber Security',
+                'DS Comp. Sc. Engg- Data Sc.',
+                'IO CS- Internet of Things',
+                'EV EC Engg(VLSI Design)',
+                'CB Comp. Sc. and Bus Sys.',
+                'CD Computer Sc. and Design',
+                'CF CS(Artificial Intel.)'
+            `;
+        case 'EC':
+            return `
+                'EC Electronics',
+                'ET Elec. Telecommn. Engg.',
+                'EI Elec. Inst. Engg',
+                'MD Med.Elect.',
+                'RI Robotics and AI',
+                'TI Industrial IoT'
+            `;
+        case 'TRENDING':
+            return `
+                'AI Artificial Intelligence',
+                'CA CS (AI, Machine Learning)',
+                'CY CS- Cyber Security',
+                'DS Comp. Sc. Engg- Data Sc.',
+                'IO CS- Internet of Things',
+                'EV EC Engg(VLSI Design)',
+                'EC Electronics',
+                'ET Elec. Telecommn. Engg.',
+                'EI Elec. Inst. Engg',
+                'MD Med.Elect.',
+                'RI Robotics and AI',
+                'TI Industrial IoT'
+            `;
+        default:
+            return '';
+    }
+}
 
 // Handle 404 - Keep this as the last middleware
 app.use((req, res) => {
