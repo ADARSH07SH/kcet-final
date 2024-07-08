@@ -9,11 +9,10 @@
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
-    "html-pdf": "^3.0.1",
-    "mysql2": "^2.3.3",
+    "mysql2": "^3.10.2",
     "node": "^22.4.0",
     "nodemon": "^3.1.4",
-    "pdf-lib": "^1.17.1"
+    "puppeteer": "^22.12.1"
   },
   "main": "app.js",
   "keywords": [],

@@ -1,58 +1,93 @@
-<!-- list.ejs -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>College List</title>
-    <link rel="stylesheet" href="/style.css">
+    <title>List of Matched Colleges</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style1.css">
 </head>
 <body>
-    <h1>College List</h1>
-
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>College Name Not Found</th>
-                    <th>Course Name</th>
-                    <th><%= category %></th>
-                    <th>Chance Of Getting (%)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% data.forEach(item => { %>
+    <div class="container">
+        <h1>List of Matched Colleges</h1>
+        <div style="overflow-x:auto;">
+            <table>
+                <thead>
                     <tr>
-                        <td><%= item['College Name Not Found'] %></td>
-                        <td><%= item['Course Name'] %></td>
-                        <td><%= item[category] %></td>
-                        <td><%= item['ChanceOfGetting'] %></td>
+                        <th>Sl. No.</th>
+                        <th>College Name</th>
+                        <th>Course Name</th>
+                        <th>
+                            Cutoff Rank (Category <%= category %>)
+                            <button onclick="sortTable(3)"><i class="fas fa-sort"></i></button>
+                        </th>
+                        <th>
+                            Round
+                        </th>
+                        <th>
+                            Chance of Getting
+                            <button onclick="sortTable(4)"><i class="fas fa-sort"></i></button>
+                        </th>
                     </tr>
-                <% }); %>
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody id="collegeTableBody">
+                    <% data.forEach((college, index) => { %>
+                        <tr>
+                            <td><%= (parseInt(page) - 1) * 40 + index + 1 %></td>
+                            <td><%= college['College Name Not Found'] %></td>
+                            <td><%= college['Course Name'] %></td>
+                            <td><%= college[category] %></td>
+                            <td>
+                                <% 
+                                if (college['ChanceOfGetting'] === 90) {
+                                    %> 1 <% 
+                                } else if (college['ChanceOfGetting'] === 60) {
+                                    %> 2 <% 
+                                } else if (college['ChanceOfGetting'] === 30) {
+                                    %> 3 <% 
+                                } %>
+                            </td>
+                            <td><%= college['ChanceOfGetting'] %>%</td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
 
-    <div class="pagination">
-        <% if (page > 1) { %>
-            <a href="/list?rank=<%= rank %>&category=<%= category %>&preferredCourse=<%= preferredCourse %>&page=<%= page - 1 %>">Previous</a>
-        <% } %>
-        <% for (let i = 1; i <= totalPages; i++) { %>
-            <% if (i === page) { %>
-                <a class="active" href="#"><%= i %></a>
-            <% } else { %>
-                <a href="/list?rank=<%= rank %>&category=<%= category %>&preferredCourse=<%= preferredCourse %>&page=<%= i %>"><%= i %></a>
+        <div class="pagination">
+            <a href="/list?rank=<%= rank %>&category=<%= category %>&preferredCourse=<%= preferredCourse %>&page=<%= Math.max(1, parseInt(page) - 1) %>"
+               class="<%= page <= 1 ? 'disabled' : '' %>">Previous</a>
+            <% for (let i = 1; i <= totalPages; i++) { %>
+                <a href="/list?rank=<%= rank %>&category=<%= category %>&preferredCourse=<%= preferredCourse %>&page=<%= i %>"
+                   class="<%= i === parseInt(page) ? 'active' : '' %>"><%= i %></a>
             <% } %>
-        <% } %>
-        <% if (page < totalPages) { %>
-            <a href="/list?rank=<%= rank %>&category=<%= category %>&preferredCourse=<%= preferredCourse %>&page=<%= page + 1 %>">Next</a>
-        <% } %>
+            <a href="/list?rank=<%= rank %>&category=<%= category %>&preferredCourse=<%= preferredCourse %>&page=<%= Math.min(totalPages, parseInt(page) + 1) %>"
+               class="<%= page >= totalPages ? 'disabled' : '' %>">Next</a>
+        </div>
     </div>
 
-    <div>
-        <a href="/downloadPDF?rank=<%= rank %>&category=<%= category %>&preferredCourse=<%= preferredCourse %>">Download PDF</a>
-    </div>
+    <script>// scripts.js
 
+function sortTable(columnIndex) {
+    const table = document.getElementById('collegeTableBody');
+    const rows = Array.from(table.rows);
+    const isAscending = table.getAttribute('data-sort') === 'asc';
+
+    rows.sort((a, b) => {
+        const aValue = parseFloat(a.cells[columnIndex].textContent) || 0;
+        const bValue = parseFloat(b.cells[columnIndex].textContent) || 0;
+
+        return isAscending ? aValue - bValue : bValue - aValue;
+    });
+
+    table.innerHTML = '';
+    rows.forEach(row => table.appendChild(row));
+
+    table.setAttribute('data-sort', isAscending ? 'desc' : 'asc');
+}
+</script>
 </body>
 </html>
