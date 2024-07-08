@@ -1,22 +1,19 @@
 {
-  "name": "web-k",
+  "name": "final-kcet",
   "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "mysql2": "^3.10.2",
-    "node": "^22.4.0",
-    "nodemon": "^3.1.4",
-    "puppeteer": "^22.12.1"
-  },
-  "main": "app.js",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+    "nodemon": "^3.1.4"
+  }
 }

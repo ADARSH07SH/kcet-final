@@ -40,7 +40,7 @@ table {
 th, td {
     border: 1px solid black;
     padding: 8px;
-    text-align: left;
+    text-align: center; /* Center align all table cells */
 }
 
 th {
@@ -51,16 +51,10 @@ th {
 
 th.small, td.small {
     width: 80px; /* Adjust width as needed */
-    text-align: center;
 }
 
 th.medium, td.medium {
     width: 150px; /* Adjust width as needed */
-    text-align: center;
-}
-
-.center {
-    text-align: center;
 }
 
 .pagination {
