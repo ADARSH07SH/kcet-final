@@ -51,10 +51,20 @@ th {
 
 th.small, td.small {
     width: 80px; /* Adjust width as needed */
+    max-width: 80px; /* Ensure maximum width */
 }
 
 th.medium, td.medium {
     width: 150px; /* Adjust width as needed */
+    max-width: 150px; /* Ensure maximum width */
+}
+
+th.college-name, td.college-name {
+    text-align: left; /* Left-align college name */
+    max-width: 300px; /* Adjust max-width for college name */
+    white-space: nowrap; /* Prevent text wrapping */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Display ellipsis (...) for overflow text */
 }
 
 .pagination {
