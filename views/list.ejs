@@ -13,21 +13,21 @@
 <body>
     <div class="container">
         <h1>List of Matched Colleges</h1>
-        <div style="overflow-x:auto;">
+        <div class="table-container">
             <table>
                 <thead>
                     <tr>
-                        <th>Sl. No.</th>
+                        <th class="small">Sl. No.</th>
                         <th>College Name</th>
                         <th>Course Name</th>
                         <th>
                             Cutoff Rank (Category <%= category %>)
                             <button onclick="sortTable(3)"><i class="fas fa-sort"></i></button>
                         </th>
-                        <th>
+                        <th class="small">
                             Round
                         </th>
-                        <th>
+                        <th class="medium">
                             Chance of Getting
                             <button onclick="sortTable(4)"><i class="fas fa-sort"></i></button>
                         </th>
@@ -36,11 +36,11 @@
                 <tbody id="collegeTableBody">
                     <% data.forEach((college, index) => { %>
                         <tr>
-                            <td><%= (parseInt(page) - 1) * 40 + index + 1 %></td>
+                            <td class="small"><%= (parseInt(page) - 1) * 40 + index + 1 %></td>
                             <td><%= college['College Name Not Found'] %></td>
                             <td><%= college['Course Name'] %></td>
-                            <td><%= college[category] %></td>
-                            <td>
+                            <td class="center"><%= college[category] %></td>
+                            <td class="small center">
                                 <% 
                                 if (college['ChanceOfGetting'] === 90) {
                                     %> 1 <% 
@@ -50,7 +50,7 @@
                                     %> 3 <% 
                                 } %>
                             </td>
-                            <td><%= college['ChanceOfGetting'] %>%</td>
+                            <td class="medium center"><%= college['ChanceOfGetting'] %>%</td>
                         </tr>
                     <% }); %>
                 </tbody>
@@ -69,25 +69,24 @@
         </div>
     </div>
 
-    <script>// scripts.js
+    <script>
+        function sortTable(columnIndex) {
+            const table = document.getElementById('collegeTableBody');
+            const rows = Array.from(table.rows);
+            const isAscending = table.getAttribute('data-sort') === 'asc';
 
-function sortTable(columnIndex) {
-    const table = document.getElementById('collegeTableBody');
-    const rows = Array.from(table.rows);
-    const isAscending = table.getAttribute('data-sort') === 'asc';
+            rows.sort((a, b) => {
+                const aValue = parseFloat(a.cells[columnIndex].textContent) || 0;
+                const bValue = parseFloat(b.cells[columnIndex].textContent) || 0;
 
-    rows.sort((a, b) => {
-        const aValue = parseFloat(a.cells[columnIndex].textContent) || 0;
-        const bValue = parseFloat(b.cells[columnIndex].textContent) || 0;
+                return isAscending ? aValue - bValue : bValue - aValue;
+            });
 
-        return isAscending ? aValue - bValue : bValue - aValue;
-    });
+            table.innerHTML = '';
+            rows.forEach(row => table.appendChild(row));
 
-    table.innerHTML = '';
-    rows.forEach(row => table.appendChild(row));
-
-    table.setAttribute('data-sort', isAscending ? 'desc' : 'asc');
-}
-</script>
+            table.setAttribute('data-sort', isAscending ? 'desc' : 'asc');
+        }
+    </script>
 </body>
 </html>
