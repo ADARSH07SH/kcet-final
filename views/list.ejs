@@ -67,7 +67,12 @@
             <a href="/list?rank=<%= rank %>&category=<%= category %>&preferredCourse=<%= preferredCourse %>&page=<%= Math.min(totalPages, parseInt(page) + 1) %>"
                class="<%= page >= totalPages ? 'disabled' : '' %>">Next</a>
         </div>
+        <div class="download-button">
+    <a href="/download-pdf?rank=<%= rank %>&category=<%= category %>&preferredCourse=<%= preferredCourse %>"
+       class="btn-download">Download as PDF</a>
+</div>
     </div>
+
 
     <script>
         function sortTable(columnIndex) {
@@ -87,6 +92,14 @@
 
             table.setAttribute('data-sort', isAscending ? 'desc' : 'asc');
         }
+
+           document.querySelector('.btn-download').addEventListener('click', function(event) {
+            // Add loading indicator or perform UI updates
+            event.currentTarget.classList.add('loading'); // Adds a 'loading' class to the button
+            
+            // Optionally, you can add more behavior here like disabling the button
+            // event.currentTarget.disabled = true;
+        });
     </script>
 </body>
 </html>
