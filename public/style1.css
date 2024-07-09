@@ -1,3 +1,4 @@
+/* General Body Styling */
 body {
     font-family: "Poppins", sans-serif;
     background-color: #20262C;
@@ -6,16 +7,15 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh; /* Ensure full viewport height */
 }
 
 .container {
-    width: 90%;
-    max-width: 1200px; /* Adjust max-width as needed */
-    height: auto;
+    width: 95%; /* Adjusted to 95% for better responsiveness */
+    max-width: 1200px; /* Maintain maximum width for larger screens */
     background-color: white;
     color: black;
-    margin: auto;
+    margin: 20px auto; /* Center container and provide margin */
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -27,7 +27,7 @@ h1 {
 }
 
 .table-container {
-    overflow-x: auto; /* Enable horizontal scrolling for tables */
+    overflow-x: auto; /* Enable horizontal scrolling for tables on smaller screens */
     margin-top: 20px;
 }
 
@@ -39,7 +39,7 @@ table {
 
 th, td {
     border: 1px solid black;
-    padding: 8px;
+    padding: 10px; /* Increased padding for better touch interaction */
     text-align: center; /* Center align all table cells */
 }
 
@@ -50,13 +50,13 @@ th {
 }
 
 th.small, td.small {
-    width: 80px; /* Adjust width as needed */
-    max-width: 80px; /* Ensure maximum width */
+    width: 80px; /* Adjust width for smaller screens */
+    max-width: 80px;
 }
 
 th.medium, td.medium {
-    width: 150px; /* Adjust width as needed */
-    max-width: 150px; /* Ensure maximum width */
+    width: 150px; /* Adjust width for smaller screens */
+    max-width: 150px;
 }
 
 th.college-name, td.college-name {
@@ -92,4 +92,81 @@ th.college-name, td.college-name {
 .pagination .disabled {
     pointer-events: none;
     color: #ccc;
+}
+
+/* Make Responsive for Mobile and Small Screens */
+@media (max-width: 1024px) {
+    .container {
+        width: 90%; /* Adjusted to 90% for tablets and smaller laptops */
+        padding: 15px; /* Increased padding for better spacing */
+    }
+
+    th, td {
+        padding: 8px; /* Decreased padding for better fit on smaller screens */
+    }
+
+    th.small, td.small {
+        width: 70px; /* Adjusted width for smaller screens */
+        max-width: 70px;
+    }
+
+    th.medium, td.medium {
+        width: 120px; /* Adjusted width for smaller screens */
+        max-width: 120px;
+    }
+
+    .pagination {
+        margin-top: 15px; /* Adjusted margin for smaller screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 95%; /* Adjusted to 95% for better fit on smaller screens */
+    }
+
+    th, td {
+        font-size: 14px; /* Decreased font size for smaller screens */
+        padding: 6px; /* Decreased padding for better fit on smaller screens */
+    }
+
+    th.small, td.small {
+        width: 60px; /* Adjusted width for smaller screens */
+        max-width: 60px;
+    }
+
+    th.medium, td.medium {
+        width: 100px; /* Adjusted width for smaller screens */
+        max-width: 100px;
+    }
+
+    .pagination {
+        margin-top: 10px; /* Adjusted margin for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        width: 100%; /* Adjusted to 100% for very small screens */
+        padding: 10px; /* Increased padding for better fit on smaller screens */
+    }
+
+    th, td {
+        font-size: 12px; /* Further decreased font size for very small screens */
+        padding: 5px; /* Further decreased padding for better fit on very small screens */
+    }
+
+    th.small, td.small {
+        width: 50px; /* Adjusted width for very small screens */
+        max-width: 50px;
+    }
+
+    th.medium, td.medium {
+        width: 80px; /* Adjusted width for very small screens */
+        max-width: 80px;
+    }
+
+    .pagination {
+        margin-top: 5px; /* Adjusted margin for very small screens */
+    }
 }

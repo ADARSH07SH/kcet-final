@@ -1,14 +1,16 @@
+/* General Body Styling */
 body {
     background-color: #20262C;
     margin: 0;
-    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: "Poppins", sans-serif;
     text-align: center;
+    height: 100vh;
 }
 
+/* Article Container Styling */
 article {
     width: 90%;
     max-width: 600px;
@@ -23,9 +25,10 @@ article {
 }
 
 article:hover {
-    box-shadow: 1px 2px 4px rgb(29, 28, 4); /* Less prominent shadow */
+    box-shadow: 1px 2px 4px rgb(29, 28, 4); /* Less prominent shadow on hover */
 }
 
+/* Title Tag Styling */
 #tag {
     background-color: #455260;
     color: #beff00;
@@ -35,10 +38,27 @@ article:hover {
     margin-bottom: 1em;
 }
 
+/* Responsive Media Query for Article Container */
+@media (max-width: 768px) {
+    article {
+        width: 90%;
+        padding: 5%;
+    }
+}
+
+@media (max-width: 480px) {
+    article {
+        width: 100%;
+        padding: 5%;
+    }
+}
+
+/* Form Styling */
 form {
     width: 100%;
 }
 
+/* Labels Styling */
 label {
     color: #beff00;
     display: block;
@@ -46,6 +66,7 @@ label {
     text-align: left;
 }
 
+/* Input and Select Styling */
 input, select {
     width: 100%;
     padding: 0.5em;
@@ -63,12 +84,13 @@ input:focus, input:active, input:valid {
     color: white; /* Ensure text remains visible */
 }
 
+/* Select Styling */
 select {
     max-height: 8em; /* Adjust height as needed */
     overflow: auto;
 }
 
-/* Custom scrollbar styling */
+/* Custom scrollbar styling for Select */
 select::-webkit-scrollbar {
     width: 12px;
 }
@@ -88,6 +110,7 @@ select::-webkit-scrollbar-thumb:hover {
     background-color: #ffd700;
 }
 
+/* Submit Button Styling */
 #submitButton {
     background-color: #20262C;
     color: #beff00;
@@ -104,28 +127,11 @@ select::-webkit-scrollbar-thumb:hover {
     color: #20262C;
 }
 
-/* Media Queries for Responsive Design */
-@media (max-width: 768px) {
-    article {
-        width: 90%;
-        padding: 5%;
-    }
-
-    input, select, #submitButton {
-        font-size: 0.9em;
-        padding: 0.4em;
-    }
-}
-
-@media (max-width: 480px) {
-    article {
-        width: 100%;
-        padding: 5%;
-    }
-
-    input, select, #submitButton {
-        font-size: 0.8em;
-        padding: 0.3em;
-    }
+/* Tag1 Styling (Use Desktop Site) */
+#tag1 {
+    
+    color: #beff00;
+    font-size: 0.8em;
+    margin-top: 5%; /* Adjust spacing */
 }
 

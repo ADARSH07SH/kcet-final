@@ -42,7 +42,7 @@ app.get("/list", (req, res) => {
     courseFilter = `'AI Artificial Intelligence', 'CS Computers', 'IE Info.Science', 'CY CS- Cyber Security', 'DS Comp. Sc. Engg- Data Sc.', 'CA CS (AI, Machine Learning)', 'CB Comp. Sc. and Bus Sys.', 'CD Computer Sc. and Design', 'IC CS-IoT, Cyber Security', 'RI Robotics and AI', 'CO Computer Engineering', 'ZC CSC', 'CC Computer and Comm. Engg.', 'EC Electronics', 'ET Elec. Telecommn. Engg.', 'EI Elec. Inst. Engg', 'RI Robotics and AI', 'AD Artificial Intel, Data Sc'`;
   }
 
- let q = `
+  let q = `
   SELECT 
     \`College_Name_Not_Found\` AS \`College Name Not Found\`,
     \`Course_Name\` AS \`Course Name\`,
@@ -73,7 +73,6 @@ app.get("/list", (req, res) => {
   ORDER BY CAST(\`${category}\` AS SIGNED) ASC
   LIMIT ${itemsPerPage} OFFSET ${offset}
 `;
-
 
   connection.query(q, [rank, rank, rank], (err, results) => {
     if (err) {
