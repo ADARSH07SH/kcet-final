@@ -40,6 +40,7 @@ app.get("/list", (req, res) => {
     const itemsPerPage = 40;
     const offset = (page - 1) * itemsPerPage;
 
+    // Define the course filters based on preferred course
     let courseFilter = '';
     if (preferredCourse === 'IT') {
         courseFilter = `
@@ -79,7 +80,28 @@ app.get("/list", (req, res) => {
         `;
     }
 
-    // Adjust the SQL queries to set ChanceOfGetting percentages
+    // If no preferred course is specified, include all courses
+    if (!preferredCourse) {
+        courseFilter = `
+            'AI Artificial Intelligence',
+            'CA CS (AI, Machine Learning)',
+            'CY CS- Cyber Security',
+            'DS Comp. Sc. Engg- Data Sc.',
+            'IO CS- Internet of Things',
+            'EV EC Engg(VLSI Design)',
+            'CB Comp. Sc. and Bus Sys.',
+            'CD Computer Sc. and Design',
+            'CF CS(Artificial Intel.)',
+            'EC Electronics',
+            'ET Elec. Telecommn. Engg.',
+            'EI Elec. Inst. Engg',
+            'MD Med.Elect.',
+            'RI Robotics and AI',
+            'TI Industrial IoT'
+        `;
+    }
+
+    // Build the SQL query to fetch colleges and courses based on rank and category
     let q = `
         SELECT 
             \`College_Name_Not_Found\` AS \`College Name Not Found\`,
@@ -136,6 +158,7 @@ app.get("/list", (req, res) => {
         LIMIT ${itemsPerPage} OFFSET ${offset}
     `;
 
+    // Execute the SQL query with the user-provided rank as parameter
     connection.query(q, [rank, rank, rank], (err, results) => {
         if (err) {
             console.error('Error executing query: ' + err.stack);
@@ -143,6 +166,7 @@ app.get("/list", (req, res) => {
             return;
         }
 
+        // Count total number of records matching the criteria across all tables
         let countQuery = `
             SELECT COUNT(*) AS total
             FROM (
@@ -168,21 +192,22 @@ app.get("/list", (req, res) => {
             }
 
             const totalItems = countResults[0].total;
-            const totalPages = Math.min(3, Math.ceil(totalItems / itemsPerPage));
+            const totalPages = Math.min(3, Math.ceil(totalItems / itemsPerPage)); // Limit to 3 pages
 
-            res.render("list.ejs", {
-                data: results,
-                category: category,
-                rank: rank,
-                preferredCourse: preferredCourse,
-                page: parseInt(page),
-                totalPages: totalPages
+            // Render the results in list.ejs, passing necessary variables
+            res.render("list.ejs", { 
+                data: results, 
+                category: category, 
+                rank: rank, 
+                preferredCourse: preferredCourse, 
+                page: parseInt(page), 
+                totalPages: totalPages 
             });
         });
     });
 });
-
-// Handle 404 - Keep this as the last middleware
+// Handle 404 errors - Page not found
 app.use((req, res) => {
     res.status(404).send("Page not found");
 });
+
