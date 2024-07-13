@@ -14,6 +14,14 @@ const connection = mysql.createConnection({
   port: process.env.DB_PORT,
 });
 
+connection.connect((err) => {
+  if (err) {
+    console.error("Error connecting to database: " + err.stack);
+    return;
+  }
+  console.log("Connected to database as id " + connection.threadId);
+});
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}/`);
 });
@@ -47,10 +55,20 @@ app.get("/list", (req, res) => {
     \`College_Name_Not_Found\` AS \`College Name Not Found\`,
     \`Course_Name\` AS \`Course Name\`,
     \`${category}\`,
-    90 AS ChanceOfGetting
+    (CASE 
+      WHEN ROUND = 1 THEN 90 
+      WHEN ROUND = 2 THEN 60 
+      ELSE 30 
+    END) AS ChanceOfGetting,
+    ROUND
   FROM (
     SELECT *,
-      ROW_NUMBER() OVER (PARTITION BY \`College_Name_Not_Found\`, \`Course_Name\` ORDER BY (CASE WHEN table_name = '2023_1' THEN 1 WHEN table_name = '2023_2' THEN 2 ELSE 3 END)) AS rn
+      ROW_NUMBER() OVER (PARTITION BY \`College_Name_Not_Found\`, \`Course_Name\` ORDER BY (CASE WHEN table_name = '2023_1' THEN 1 WHEN table_name = '2023_2' THEN 2 ELSE 3 END)) AS rn,
+      (CASE 
+        WHEN table_name = '2023_1' THEN 1 
+        WHEN table_name = '2023_2' THEN 2 
+        ELSE 3 
+      END) AS ROUND
     FROM (
       SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`, '2023_1' AS table_name
       FROM \`2023_1\`
@@ -74,7 +92,9 @@ app.get("/list", (req, res) => {
   LIMIT ${itemsPerPage} OFFSET ${offset}
 `;
 
-  connection.query(q, [rank, rank, rank], (err, results) => {
+  console.log("Executing query: ", q);
+
+  connection.query(q, [rank], (err, results) => {
     if (err) {
       console.error("Error executing query: " + err.stack);
       res.send("Error fetching data from database.");
@@ -97,6 +117,8 @@ app.get("/list", (req, res) => {
       ${courseFilter ? `AND \`Course_Name\` IN (${courseFilter})` : ""}
       AND \`${category}\` != '--'
     `;
+
+    console.log("Executing count query: ", countQuery);
 
     connection.query(countQuery, [rank], (countErr, countResults) => {
       if (countErr) {
