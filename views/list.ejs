@@ -1,106 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>List of Matched Colleges</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/style1.css">
-</head>
-<body>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/style1.css" />
+  </head>
+  <body>
     <div class="container">
-        <h1>List of Matched Colleges</h1>
-        <div class="table-container">
-            <table id="collegeTable">
-                <thead>
-                    <tr>
-                        <th class="small">Sl. No.</th>
-                        <th>College Name</th>
-                        <th>Course Name</th>
-                        <th>
-                            Cutoff Rank (Category <%= category %>)
-                            <button onclick="sortTable(3)"><i class="fas fa-sort"></i></button>
-                        </th>
-                        <th class="small">
-                            Round
-                        </th>
-                        <th class="medium">
-                            Chance of Getting
-                            <button onclick="sortTable(5)"><i class="fas fa-sort"></i></button>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody id="collegeTableBody">
-                    <% data.forEach((college, index) => { %>
-                        <tr>
-                            <td class="small"><%= (parseInt(page) - 1) * 40 + index + 1 %></td>
-                            <td><%= college['College Name Not Found'] %></td>
-                            <td><%= college['Course Name'] %></td>
-                            <td class="center"><%= college[category] %></td>
-                            <td class="small center"><%= college['ROUND'] %></td>
-                            <td class="medium center"><%= college['ChanceOfGetting'] %>%</td>
-                        </tr>
-                    <% }); %>
-                </tbody>
-            </table>
-        </div>
+      <h1>List of Matched Colleges</h1>
+      <div class="table-container">
+        <table id="collegeTable">
+          <thead>
+            <tr>
+              <th class="small">Sl. No.</th>
+              <th>College Name</th>
+              <th>Course Name</th>
+              <th>
+                Cutoff Rank (Category <%= category %>)
+                <button onclick="sortTable(3)">
+                  <i class="fas fa-sort"></i>
+                </button>
+              </th>
+              <th class="small">Round</th>
+              <th class="medium">
+                Chance of Getting
+                <button onclick="sortTable(5)">
+                  <i class="fas fa-sort"></i>
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="collegeTableBody">
+            <% data.forEach((college, index) => { %>
+            <tr>
+              <td class="small">
+                <%= (parseInt(page) - 1) * 40 + index + 1 %>
+              </td>
+              <td><%= college['College Name Not Found'] %></td>
+              <td><%= college['Course Name'] %></td>
+              <td class="center"><%= college[category] %></td>
+              <td class="small center"><%= college['ROUND'] %></td>
+              <td class="medium center"><%= college['ChanceOfGetting'] %>%</td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
 
-        <div class="pagination">
-            <a href="/list?rank=<%= rank %>&category=<%= category %>&preferredCourse=<%= preferredCourse %>&page=<%= Math.max(1, parseInt(page) - 1) %>"
-               class="<%= page <= 1 ? 'disabled' : '' %>">Previous</a>
-            <% for (let i = 1; i <= totalPages; i++) { %>
-                <a href="/list?rank=<%= rank %>&category=<%= category %>&preferredCourse=<%= preferredCourse %>&page=<%= i %>"
-                   class="<%= i === parseInt(page) ? 'active' : '' %>"><%= i %></a>
-            <% } %>
-            <a href="/list?rank=<%= rank %>&category=<%= category %>&preferredCourse=<%= preferredCourse %>&page=<%= Math.min(totalPages, parseInt(page) + 1) %>"
-               class="<%= page >= totalPages ? 'disabled' : '' %>">Next</a>
-        </div>
+      <div class="pagination">
+        <a
+          href="/list?rank=<%= rank %>&category=<%= category %>&preferredCourse=<%= preferredCourse %>&page=<%= Math.max(1, parseInt(page) - 1) %>"
+          class="<%= page <= 1 ? 'disabled' : '' %>"
+          >Previous</a
+        >
+        <% for (let i = 1; i <= totalPages; i++) { %>
+        <a
+          href="/list?rank=<%= rank %>&category=<%= category %>&preferredCourse=<%= preferredCourse %>&page=<%= i %>"
+          class="<%= i === parseInt(page) ? 'active' : '' %>"
+          ><%= i %></a
+        >
+        <% } %>
+        <a
+          href="/list?rank=<%= rank %>&category=<%= category %>&preferredCourse=<%= preferredCourse %>&page=<%= Math.min(totalPages, parseInt(page) + 1) %>"
+          class="<%= page >= totalPages ? 'disabled' : '' %>"
+          >Next</a
+        >
+      </div>
 
-        <div><button onclick="downloadPDF()">Download PDF</button></div>
+      <div class="download-button">
+        <a
+          href="/download?rank=<%= rank %>&category=<%= category %>&preferredCourse=<%= preferredCourse %>"
+          class="btn btn-primary"
+          >Download PDF</a
+        >
+      </div>
     </div>
 
-    <!-- Include jsPDF and html2canvas -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
-
     <script>
-        function sortTable(columnIndex) {
-            const table = document.getElementById('collegeTableBody');
-            const rows = Array.from(table.rows);
-            const isAscending = table.getAttribute('data-sort') === 'asc';
+      function sortTable(columnIndex) {
+        const table = document.getElementById("collegeTableBody");
+        const rows = Array.from(table.rows);
+        const isAscending = table.getAttribute("data-sort") === "asc";
 
-            rows.sort((a, b) => {
-                const aValue = parseFloat(a.cells[columnIndex].textContent) || 0;
-                const bValue = parseFloat(b.cells[columnIndex].textContent) || 0;
+        rows.sort((a, b) => {
+          const aValue = parseFloat(a.cells[columnIndex].textContent) || 0;
+          const bValue = parseFloat(b.cells[columnIndex].textContent) || 0;
 
-                return isAscending ? aValue - bValue : bValue - aValue;
-            });
+          return isAscending ? aValue - bValue : bValue - aValue;
+        });
 
-            table.innerHTML = '';
-            rows.forEach(row => table.appendChild(row));
+        table.innerHTML = "";
+        rows.forEach((row) => table.appendChild(row));
 
-            table.setAttribute('data-sort', isAscending ? 'desc' : 'asc');
-        }
-
-        function downloadPDF() {
-            console.log('Downloading PDF...');
-            const table = document.getElementById('collegeTable');
-            html2canvas(table).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF();
-                const imgProps = pdf.getImageProperties(imgData);
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = imgProps.height * pdfWidth / imgProps.width;
-                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-                pdf.save('table.pdf');
-                console.log('PDF saved successfully.');
-            }).catch(error => {
-                console.error('Error generating PDF:', error);
-            });
-        }
+        table.setAttribute("data-sort", isAscending ? "desc" : "asc");
+      }
     </script>
-</body>
+  </body>
 </html>

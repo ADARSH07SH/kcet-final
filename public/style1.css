@@ -170,3 +170,32 @@ th.college-name, td.college-name {
         margin-top: 5px; /* Adjusted margin for very small screens */
     }
 }
+
+.download-button {
+        text-align: center;
+margin-top: 25px; 
+}
+     
+.download-button a {
+    background-color: dodgerblue;
+    text-align: center;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    transition: background-color .3s;
+    margin: 0 5px;
+    border-radius: 5px; /* Adjust spacing between pagination links */
+}
+
+.download-button a.active {
+    background-color: dodgerblue;
+    color: white;
+}
+
+.download-button a:hover:not(.active) {
+    color: black;}
+
+.download-button .disabled {
+    pointer-events: none;
+    color: #ccc;
+}
