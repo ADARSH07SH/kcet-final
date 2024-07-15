@@ -46,21 +46,44 @@ app.get("/list", (req, res) => {
   switch (preferredCourse) {
     case "IT":
       courseFilter = [
+        "'AD Artificial Intel, Data Sc'",
+        "'IE Info.Science'",
+        "'AM B Tech in AM'",
         "'AI Artificial Intelligence'",
         "'CS Computers'",
-        "'IE Info.Science'",
         "'CY CS- Cyber Security'",
         "'DS Comp. Sc. Engg- Data Sc.'",
         "'CA CS (AI, Machine Learning)'",
         "'CB Comp. Sc. and Bus Sys.'",
         "'CD Computer Sc. and Design'",
         "'IC CS-IoT, Cyber Security'",
-        "'RI Robotics and AI'",
+        "'BW B Tech in CS'",
+        "'CF CS(Artificial Intel.)'",
         "'CO Computer Engineering'",
-        "'ZC CSC'",
         "'CC Computer and Comm. Engg.'",
+        "'ES Electronics and Computer'",
+        "'ZC CSC'",
+        "'IO CS- Internet of Things'",
+        "'DM B.TECH IN CS NW'",
+        "'DL B.TECH IN CS'",
+        "'DC Data Sciences'",
+        "'LG B Tech in CS'",
+        "'CW B Tech in IT'",
+        "'BZ B Tech in DS'",
+        "'BH B Tech in AI'",
+        "'DE B Tech in PE'",
+        "'LD B Tech in DS'",
+        "'LE B Tech in AIML'",
+        "'LF B Tech in CC'",
+        "'LH B Tech in IS'",
+        "'LK B Tech in IOT'",
+        "'CM B Tech in EV'",
+        "'DN B.Tech in VLSI'",
+        "'DH B Tech in RAI'",
+        "'BR BioMed. and Robotic Engg'",
       ].join(", ");
       break;
+
     case "EC":
       courseFilter = [
         "'EC Electronics'",
@@ -76,19 +99,49 @@ app.get("/list", (req, res) => {
     case "TRENDING":
       courseFilter = [
         "'AI Artificial Intelligence'",
-        "'CS Computers'",
-        "'IE Info.Science'",
+        "'EC Electronics'",
+        "'EE Electrical'",
+        "'EI Elec. Inst. Engg'",
+        "'ET Elec. Telecommn. Engg.'",
+        "'EV EC Engg(VLSI Design)'",
+        "'RI Robotics and AI'",
+        "'BB B Tech in EC'",
+        "'BJ B Tech in EE'",
         "'CY CS- Cyber Security'",
         "'DS Comp. Sc. Engg- Data Sc.'",
         "'CA CS (AI, Machine Learning)'",
         "'CB Comp. Sc. and Bus Sys.'",
         "'CD Computer Sc. and Design'",
         "'IC CS-IoT, Cyber Security'",
-        "'RI Robotics and AI'",
         "'CO Computer Engineering'",
         "'ZC CSC'",
         "'CC Computer and Comm. Engg.'",
-        "'EC Electronics'",
+        "'IO CS- Internet of Things'",
+        "'DM B.TECH IN CS NW'",
+        "'DL B.TECH IN CS'",
+        "'DC Data Sciences'",
+        "'LG B Tech in CS'",
+        "'CW B Tech in IT'",
+        "'BZ B Tech in DS'",
+        "'BH B Tech in AI'",
+        "'DE B Tech in PE'",
+        "'LD B Tech in DS'",
+        "'LE B Tech in AIML'",
+        "'LF B Tech in CC'",
+        "'LH B Tech in IS'",
+        "'LK B Tech in IOT'",
+        "'AD Artificial Intel, Data Sc'",
+        "'IE Info.Science'",
+        "'AM B Tech in AM'",
+        "'AI Artificial Intelligence'",
+        "'CS Computers'",
+        "'CY CS- Cyber Security'",
+        "'DS Comp. Sc. Engg- Data Sc.'",
+        "'CA CS (AI, Machine Learning)'",
+        "'CB Comp. Sc. and Bus Sys.'",
+        "'CD Computer Sc. and Design'",
+        "'IC CS-IoT, Cyber Security'",
+        "'BW B Tech in CS'",
         "'ET Elec. Telecommn. Engg.'",
         "'EI Elec. Inst. Engg'",
         "'AD Artificial Intel, Data Sc'",
@@ -99,46 +152,46 @@ app.get("/list", (req, res) => {
   }
 
   let q = `
-    SELECT 
-      \`College_Name_Not_Found\` AS \`College Name Not Found\`,
-      \`Course_Name\` AS \`Course Name\`,
-      \`${category}\`,
+  SELECT 
+    REPLACE(REPLACE(\`College_Name_Not_Found\`, '\\n', ''), '\\r', '') AS \`College Name Not Found\`,
+    REPLACE(REPLACE(\`Course_Name\`, '\\n', ''), '\\r', '') AS \`Course Name\`,
+    \`${category}\`,
+    (CASE 
+      WHEN ROUND = 1 THEN 90 
+      WHEN ROUND = 2 THEN 60 
+      ELSE 30 
+    END) AS ChanceOfGetting,
+    ROUND
+  FROM (
+    SELECT *,
+      ROW_NUMBER() OVER (PARTITION BY \`College_Name_Not_Found\`, \`Course_Name\` ORDER BY (CASE WHEN table_name = '2023_1' THEN 1 WHEN table_name = '2023_2' THEN 2 ELSE 3 END)) AS rn,
       (CASE 
-        WHEN ROUND = 1 THEN 90 
-        WHEN ROUND = 2 THEN 60 
-        ELSE 30 
-      END) AS ChanceOfGetting,
-      ROUND
+        WHEN table_name = '2023_1' THEN 1 
+        WHEN table_name = '2023_2' THEN 2 
+        ELSE 3 
+      END) AS ROUND
     FROM (
-      SELECT *,
-        ROW_NUMBER() OVER (PARTITION BY \`College_Name_Not_Found\`, \`Course_Name\` ORDER BY (CASE WHEN table_name = '2023_1' THEN 1 WHEN table_name = '2023_2' THEN 2 ELSE 3 END)) AS rn,
-        (CASE 
-          WHEN table_name = '2023_1' THEN 1 
-          WHEN table_name = '2023_2' THEN 2 
-          ELSE 3 
-        END) AS ROUND
-      FROM (
-        SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`, '2023_1' AS table_name
-        FROM \`2023_1\`
-        
-        UNION ALL
-        
-        SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`, '2023_2' AS table_name
-        FROM \`2023_2\`
-        
-        UNION ALL
-        
-        SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`, '2023_3' AS table_name
-        FROM \`2023_3\`
-      ) AS combined
-      WHERE CAST(\`${category}\` AS SIGNED) >= ?
-      ${courseFilter ? `AND \`Course_Name\` IN (${courseFilter})` : ""}
-      AND \`${category}\` != '--'
-    ) AS ranked
-    WHERE rn = 1
-    ORDER BY CAST(\`${category}\` AS SIGNED) ASC
-    LIMIT ${itemsPerPage} OFFSET ${offset}
-  `;
+      SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`, '2023_1' AS table_name
+      FROM \`2023_1\`
+      
+      UNION ALL
+      
+      SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`, '2023_2' AS table_name
+      FROM \`2023_2\`
+      
+      UNION ALL
+      
+      SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`, '2023_3' AS table_name
+      FROM \`2023_3\`
+    ) AS combined
+    WHERE CAST(\`${category}\` AS SIGNED) >= ?
+    ${courseFilter ? `AND REPLACE(REPLACE(\`Course_Name\`, '\\n', ''), '\\r', '') IN (${courseFilter})` : ""}
+    AND \`${category}\` != '--'
+  ) AS ranked
+  WHERE rn = 1
+  ORDER BY CAST(\`${category}\` AS SIGNED) ASC
+  LIMIT ${itemsPerPage} OFFSET ${offset}
+`;
 
   connection.query(q, [rank], (err, results) => {
     if (err) {
@@ -148,21 +201,21 @@ app.get("/list", (req, res) => {
     }
 
     let countQuery = `
-      SELECT COUNT(*) AS total
-      FROM (
-        SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`
-        FROM \`2023_1\`
-        UNION
-        SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`
-        FROM \`2023_2\`
-        UNION
-        SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`
-        FROM \`2023_3\`
-      ) AS combined
-      WHERE CAST(\`${category}\` AS SIGNED) >= ?
-      ${courseFilter ? `AND \`Course_Name\` IN (${courseFilter})` : ""}
-      AND \`${category}\` != '--'
-    `;
+    SELECT COUNT(*) AS total
+    FROM (
+      SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`
+      FROM \`2023_1\`
+      UNION
+      SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`
+      FROM \`2023_2\`
+      UNION
+      SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`
+      FROM \`2023_3\`
+    ) AS combined
+    WHERE CAST(\`${category}\` AS SIGNED) >= ?
+    ${courseFilter ? `AND REPLACE(REPLACE(\`Course_Name\`, '\\n', ''), '\\r', '') IN (${courseFilter})` : ""}
+    AND \`${category}\` != '--'
+  `;
 
     connection.query(countQuery, [rank], (countErr, countResults) => {
       if (countErr) {
@@ -184,63 +237,158 @@ app.get("/list", (req, res) => {
       });
     });
   });
-});
-
+})
 
 app.get("/download", (req, res) => {
   const { rank, category, preferredCourse } = req.query;
 
   let courseFilter = "";
   if (preferredCourse === "IT") {
-    courseFilter = `'AI Artificial
- Intelligence', 'CS Computers', 'IE Info.Science', 'CY CS- Cyber Security', 'DS Comp. Sc. Engg- Data Sc.', 'CA CS (AI, Machine Learning)', 'CB Comp. Sc. and Bus Sys.', 'CD Computer Sc. and Design', 'IC CS-IoT, Cyber Security', 'RI Robotics and AI', 'CO Computer Engineering', 'ZC CSC', 'CC Computer and Comm. Engg.'`;
+    courseFilter = [
+      "'AD Artificial Intel, Data Sc'",
+      "'IE Info.Science'",
+      "'AM B Tech in AM'",
+      "'AI Artificial Intelligence'",
+      "'CS Computers'",
+      "'CY CS- Cyber Security'",
+      "'DS Comp. Sc. Engg- Data Sc.'",
+      "'CA CS (AI, Machine Learning)'",
+      "'CB Comp. Sc. and Bus Sys.'",
+      "'CD Computer Sc. and Design'",
+      "'IC CS-IoT, Cyber Security'",
+      "'BW B Tech in CS'",
+      "'CF CS(Artificial Intel.)'",
+      "'CO Computer Engineering'",
+      "'CC Computer and Comm. Engg.'",
+      "'ES Electronics and Computer'",
+      "'ZC CSC'",
+      "'IO CS- Internet of Things'",
+      "'DM B.TECH IN CS NW'",
+      "'DL B.TECH IN CS'",
+      "'DC Data Sciences'",
+      "'LG B Tech in CS'",
+      "'CW B Tech in IT'",
+      "'BZ B Tech in DS'",
+      "'BH B Tech in AI'",
+      "'DE B Tech in PE'",
+      "'LD B Tech in DS'",
+      "'LE B Tech in AIML'",
+      "'LF B Tech in CC'",
+      "'LH B Tech in IS'",
+      "'LK B Tech in IOT'",
+      "'CM B Tech in EV'",
+      "'DN B.Tech in VLSI'",
+      "'DH B Tech in RAI'",
+      "'BR BioMed. and Robotic Engg'",
+    ].join(", ");
   } else if (preferredCourse === "EC") {
-    courseFilter = `'EC Electronics', 'EE Electrical', 'EI Elec. Inst. Engg', 'ET Elec. Telecommn. Engg.', 'EV EC Engg(VLSI Design)', 'RI Robotics and AI', 'BB B Tech in EC', 'BJ B Tech in EE'`;
+    courseFilter = [
+      "'EC Electronics'",
+      "'EE Electrical'",
+      "'EI Elec. Inst. Engg'",
+      "'ET Elec. Telecommn. Engg.'",
+      "'EV EC Engg(VLSI Design)'",
+      "'RI Robotics and AI'",
+      "'BB B Tech in EC'",
+      "'BJ B Tech in EE'",
+    ].join(", ");
   } else if (preferredCourse === "TRENDING") {
-    courseFilter = `'AI Artificial Intelligence', 'CS Computers', 'IE Info.Science', 'CY CS- Cyber Security', 'DS Comp. Sc. Engg- Data Sc.', 'CA CS (AI, Machine Learning)', 'CB Comp. Sc. and Bus Sys.', 'CD Computer Sc. and Design', 'IC CS-IoT, Cyber Security', 'RI Robotics and AI', 'CO Computer Engineering', 'ZC CSC', 'CC Computer and Comm. Engg.', 'EC Electronics', 'ET Elec. Telecommn. Engg.', 'EI Elec. Inst. Engg', 'RI Robotics and AI', 'AD Artificial Intel, Data Sc'`;
+    courseFilter = [
+      "'AI Artificial Intelligence'",
+      "'EC Electronics'",
+      "'EE Electrical'",
+      "'EI Elec. Inst. Engg'",
+      "'ET Elec. Telecommn. Engg.'",
+      "'EV EC Engg(VLSI Design)'",
+      "'RI Robotics and AI'",
+      "'BB B Tech in EC'",
+      "'BJ B Tech in EE'",
+      "'CY CS- Cyber Security'",
+      "'DS Comp. Sc. Engg- Data Sc.'",
+      "'CA CS (AI, Machine Learning)'",
+      "'CB Comp. Sc. and Bus Sys.'",
+      "'CD Computer Sc. and Design'",
+      "'IC CS-IoT, Cyber Security'",
+      "'CO Computer Engineering'",
+      "'ZC CSC'",
+      "'CC Computer and Comm. Engg.'",
+      "'IO CS- Internet of Things'",
+      "'DM B.TECH IN CS NW'",
+      "'DL B.TECH IN CS'",
+      "'DC Data Sciences'",
+      "'LG B Tech in CS'",
+      "'CW B Tech in IT'",
+      "'BZ B Tech in DS'",
+      "'BH B Tech in AI'",
+      "'DE B Tech in PE'",
+      "'LD B Tech in DS'",
+      "'LE B Tech in AIML'",
+      "'LF B Tech in CC'",
+      "'LH B Tech in IS'",
+      "'LK B Tech in IOT'",
+      "'AD Artificial Intel, Data Sc'",
+      "'IE Info.Science'",
+      "'AM B Tech in AM'",
+      "'AI Artificial Intelligence'",
+      "'CS Computers'",
+      "'CY CS- Cyber Security'",
+      "'DS Comp. Sc. Engg- Data Sc.'",
+      "'CA CS (AI, Machine Learning)'",
+      "'CB Comp. Sc. and Bus Sys.'",
+      "'CD Computer Sc. and Design'",
+      "'IC CS-IoT, Cyber Security'",
+      "'BW B Tech in CS'",
+      "'ET Elec. Telecommn. Engg.'",
+      "'EI Elec. Inst. Engg'",
+      "'AD Artificial Intel, Data Sc'",
+    ].join(", ");
   }
 
   let q = `
-SELECT 
-  \`College_Name_Not_Found\` AS \`College Name\`,
-  \`Course_Name\` AS \`Course Name\`,
-  \`${category}\` AS \`Cutoff Rank (Category ${category})\`,
-  (CASE 
-    WHEN ROUND = 1 THEN 90 
-    WHEN ROUND = 2 THEN 60 
-    ELSE 30 
-  END) AS \`Chance of Getting\`,
-  ROUND AS \`Round\`
-FROM (
-  SELECT *,
-    ROW_NUMBER() OVER (PARTITION BY \`College_Name_Not_Found\`, \`Course_Name\` ORDER BY (CASE WHEN table_name = '2023_1' THEN 1 WHEN table_name = '2023_2' THEN 2 ELSE 3 END)) AS rn,
-    (CASE 
-      WHEN table_name = '2023_1' THEN 1 
-      WHEN table_name = '2023_2' THEN 2 
-      ELSE 3 
-    END) AS ROUND
-  FROM (
-    SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`, '2023_1' AS table_name
-    FROM \`2023_1\`
-    
-    UNION ALL
-    
-    SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`, '2023_2' AS table_name
-    FROM \`2023_2\`
-    
-    UNION ALL
-    
-    SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`, '2023_3' AS table_name
-    FROM \`2023_3\`
-  ) AS combined
-  WHERE CAST(\`${category}\` AS SIGNED) >= ?
-  ${courseFilter ? `AND \`Course_Name\` IN (${courseFilter})` : ""}
-  AND \`${category}\` != '--'
-) AS ranked
-WHERE rn = 1
-ORDER BY CAST(\`${category}\` AS SIGNED) ASC
-LIMIT 75
-`;
+    SELECT 
+        REPLACE(REPLACE(\`College_Name_Not_Found\`, '\\n', ''), '\\r', '') AS \`College Name Not Found\`,
+        REPLACE(REPLACE(\`Course_Name\`, '\\n', ''), '\\r', '') AS \`Course Name\`,
+        \`${category}\`,
+        (CASE 
+          WHEN ROUND = 1 THEN 90 
+          WHEN ROUND = 2 THEN 60 
+          ELSE 30 
+        END) AS ChanceOfGetting,
+        ROUND
+      FROM (
+        SELECT *,
+          ROW_NUMBER() OVER (PARTITION BY \`College_Name_Not_Found\`, \`Course_Name\` ORDER BY (CASE WHEN table_name = '2023_1' THEN 1 WHEN table_name = '2023_2' THEN 2 ELSE 3 END)) AS rn,
+          (CASE 
+            WHEN table_name = '2023_1' THEN 1 
+            WHEN table_name = '2023_2' THEN 2 
+            ELSE 3 
+          END) AS ROUND
+        FROM (
+          SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`, '2023_1' AS table_name
+          FROM \`2023_1\`
+          
+          UNION ALL
+          
+          SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`, '2023_2' AS table_name
+          FROM \`2023_2\`
+          
+          UNION ALL
+          
+          SELECT \`College_Name_Not_Found\`, \`Course_Name\`, \`${category}\`, '2023_3' AS table_name
+          FROM \`2023_3\`
+        ) AS combined
+        WHERE CAST(\`${category}\` AS SIGNED) >= ?
+        ${
+          courseFilter
+            ? `AND REPLACE(REPLACE(\`Course_Name\`, '\\n', ''), '\\r', '') IN (${courseFilter})`
+            : ""
+        }
+        AND \`${category}\` != '--'
+      ) AS ranked
+      WHERE rn = 1
+      ORDER BY CAST(\`${category}\` AS SIGNED) ASC
+      LIMIT 75
+    `;
 
   connection.query(q, [rank], (err, results) => {
     if (err) {
@@ -290,61 +438,57 @@ LIMIT 75
       doc.moveDown(1);
     }
 
-    function generateTableRow(row, index) {
-      const y = doc.y;
-      const cellHeight = 40;
-      const padding = 6;
-      doc.fontSize(10).font("Helvetica");
-      doc.rect(30, y, 30, cellHeight).stroke();
-      doc.text(index + 1, 30, y + padding, { width: 30, align: "center" });
-      doc.rect(70, y, 180, cellHeight).stroke();
-      doc.text(row["College Name"], 70, y + padding, {
-        width: 180,
-        align: "center",
-        ellipsis: true,
-        height: cellHeight - 2 * padding,
-        lineGap: 3,
-      });
-      doc.rect(250, y, 100, cellHeight).stroke();
-      doc.text(row["Course Name"], 250, y + padding, {
-        width: 100,
-        align: "center",
-        ellipsis: true,
-        height: cellHeight - 2 * padding,
-        lineGap: 3,
-      });
-      doc.rect(350, y, 100, cellHeight).stroke();
-      doc.text(
-        row[`Cutoff Rank (Category ${category})`].toString(),
-        350,
-        y + padding,
-        {
-          width: 100,
-          align: "center",
-          ellipsis: true,
-          height: cellHeight - 2 * padding,
-          lineGap: 3,
-        }
-      );
-      doc.rect(450, y, 50, cellHeight).stroke();
-      doc.text(row["Round"].toString(), 450, y + padding, {
-        width: 50,
-        align: "center",
-        ellipsis: true,
-        height: cellHeight - 2 * padding,
-        lineGap: 3,
-      });
-      doc.rect(500, y, 70, cellHeight).stroke();
-      doc.text(row["Chance of Getting"].toString(), 500, y + padding, {
-        width: 70,
-        align: "center",
-        ellipsis: true,
-        height: cellHeight - 2 * padding,
-        lineGap: 3,
-      });
+   function generateTableRow(row, index) {
+     const y = doc.y;
+     const cellHeight = 40;
+     const padding = 6;
+     doc.fontSize(10).font("Helvetica");
+     doc.rect(30, y, 30, cellHeight).stroke();
+     doc.text(index + 1, 30, y + padding, { width: 30, align: "center" });
+     doc.rect(70, y, 180, cellHeight).stroke();
+     doc.text(row["College Name Not Found"], 70, y + padding, {
+       width: 180,
+       align: "center",
+       ellipsis: true,
+       height: cellHeight - 2 * padding,
+       lineGap: 3,
+     });
+     doc.rect(250, y, 100, cellHeight).stroke();
+     doc.text(row["Course Name"], 250, y + padding, {
+       width: 100,
+       align: "center",
+       ellipsis: true,
+       height: cellHeight - 2 * padding,
+       lineGap: 3,
+     });
+     doc.rect(350, y, 100, cellHeight).stroke();
+     doc.text(row[category].toString(), 350, y + padding, {
+       width: 100,
+       align: "center",
+       ellipsis: true,
+       height: cellHeight - 2 * padding,
+       lineGap: 3,
+     });
+     doc.rect(450, y, 50, cellHeight).stroke();
+     doc.text(row["ROUND"].toString(), 450, y + padding, {
+       width: 50,
+       align: "center",
+       ellipsis: true,
+       height: cellHeight - 2 * padding,
+       lineGap: 3,
+     });
+     doc.rect(500, y, 70, cellHeight).stroke();
+     doc.text(row["ChanceOfGetting"].toString(), 500, y + padding, {
+       width: 70,
+       align: "center",
+       ellipsis: true,
+       height: cellHeight - 2 * padding,
+       lineGap: 3,
+     });
 
-      doc.y += cellHeight;
-    }
+     doc.y += cellHeight;
+   }
+
 
     const itemsPerPage = 10;
     sortedResults.slice(0, 75).forEach((row, index) => {
