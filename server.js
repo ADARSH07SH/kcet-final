@@ -3,6 +3,7 @@ const path = require("path");
 const mysql = require("mysql2");
 const PDFDocument = require("pdfkit");
 require("dotenv").config();
+import { Analytics } from "@vercel/analytics/react";
 
 const app = express();
 const port = process.env.PORT || 8000;
