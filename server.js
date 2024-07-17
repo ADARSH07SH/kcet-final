@@ -26,7 +26,7 @@ connection.connect((err) => {
   inject();
 });
 
-inject();
+
   
 
 
