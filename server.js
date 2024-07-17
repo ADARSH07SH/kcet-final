@@ -3,6 +3,7 @@ const path = require("path");
 const mysql = require("mysql2");
 const PDFDocument = require("pdfkit");
 require("dotenv").config();
+import { injectSpeedInsights } from "@vercel/speed-insights";
 
 
 const app = express();
@@ -22,6 +23,7 @@ connection.connect((err) => {
     return;
   }
   console.log("Connected to database as id " + connection.threadId);
+  injectSpeedInsights();
 });
 
 app.listen(port, () => {
