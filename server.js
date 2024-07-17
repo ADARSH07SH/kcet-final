@@ -3,7 +3,6 @@ const path = require("path");
 const mysql = require("mysql2");
 const PDFDocument = require("pdfkit");
 require("dotenv").config();
-import { Analytics } from "@vercel/analytics/react";
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -37,8 +36,6 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
   res.render("rank.ejs");
 });
-
-<Analytics />;
 
 app.get("/list", (req, res) => {
   const { rank, category, preferredCourse, page = 1 } = req.query;
@@ -188,7 +185,11 @@ app.get("/list", (req, res) => {
       FROM \`2023_3\`
     ) AS combined
     WHERE CAST(\`${category}\` AS SIGNED) >= ?
-    ${courseFilter ? `AND REPLACE(REPLACE(\`Course_Name\`, '\\n', ''), '\\r', '') IN (${courseFilter})` : ""}
+    ${
+      courseFilter
+        ? `AND REPLACE(REPLACE(\`Course_Name\`, '\\n', ''), '\\r', '') IN (${courseFilter})`
+        : ""
+    }
     AND \`${category}\` != '--'
   ) AS ranked
   WHERE rn = 1
@@ -216,7 +217,11 @@ app.get("/list", (req, res) => {
       FROM \`2023_3\`
     ) AS combined
     WHERE CAST(\`${category}\` AS SIGNED) >= ?
-    ${courseFilter ? `AND REPLACE(REPLACE(\`Course_Name\`, '\\n', ''), '\\r', '') IN (${courseFilter})` : ""}
+    ${
+      courseFilter
+        ? `AND REPLACE(REPLACE(\`Course_Name\`, '\\n', ''), '\\r', '') IN (${courseFilter})`
+        : ""
+    }
     AND \`${category}\` != '--'
   `;
 
@@ -240,7 +245,7 @@ app.get("/list", (req, res) => {
       });
     });
   });
-})
+});
 
 app.get("/download", (req, res) => {
   const { rank, category, preferredCourse } = req.query;
@@ -441,57 +446,56 @@ app.get("/download", (req, res) => {
       doc.moveDown(1);
     }
 
-   function generateTableRow(row, index) {
-     const y = doc.y;
-     const cellHeight = 40;
-     const padding = 6;
-     doc.fontSize(10).font("Helvetica");
-     doc.rect(30, y, 30, cellHeight).stroke();
-     doc.text(index + 1, 30, y + padding, { width: 30, align: "center" });
-     doc.rect(70, y, 180, cellHeight).stroke();
-     doc.text(row["College Name Not Found"], 70, y + padding, {
-       width: 180,
-       align: "center",
-       ellipsis: true,
-       height: cellHeight - 2 * padding,
-       lineGap: 3,
-     });
-     doc.rect(250, y, 100, cellHeight).stroke();
-     doc.text(row["Course Name"], 250, y + padding, {
-       width: 100,
-       align: "center",
-       ellipsis: true,
-       height: cellHeight - 2 * padding,
-       lineGap: 3,
-     });
-     doc.rect(350, y, 100, cellHeight).stroke();
-     doc.text(row[category].toString(), 350, y + padding, {
-       width: 100,
-       align: "center",
-       ellipsis: true,
-       height: cellHeight - 2 * padding,
-       lineGap: 3,
-     });
-     doc.rect(450, y, 50, cellHeight).stroke();
-     doc.text(row["ROUND"].toString(), 450, y + padding, {
-       width: 50,
-       align: "center",
-       ellipsis: true,
-       height: cellHeight - 2 * padding,
-       lineGap: 3,
-     });
-     doc.rect(500, y, 70, cellHeight).stroke();
-     doc.text(row["ChanceOfGetting"].toString(), 500, y + padding, {
-       width: 70,
-       align: "center",
-       ellipsis: true,
-       height: cellHeight - 2 * padding,
-       lineGap: 3,
-     });
+    function generateTableRow(row, index) {
+      const y = doc.y;
+      const cellHeight = 40;
+      const padding = 6;
+      doc.fontSize(10).font("Helvetica");
+      doc.rect(30, y, 30, cellHeight).stroke();
+      doc.text(index + 1, 30, y + padding, { width: 30, align: "center" });
+      doc.rect(70, y, 180, cellHeight).stroke();
+      doc.text(row["College Name Not Found"], 70, y + padding, {
+        width: 180,
+        align: "center",
+        ellipsis: true,
+        height: cellHeight - 2 * padding,
+        lineGap: 3,
+      });
+      doc.rect(250, y, 100, cellHeight).stroke();
+      doc.text(row["Course Name"], 250, y + padding, {
+        width: 100,
+        align: "center",
+        ellipsis: true,
+        height: cellHeight - 2 * padding,
+        lineGap: 3,
+      });
+      doc.rect(350, y, 100, cellHeight).stroke();
+      doc.text(row[category].toString(), 350, y + padding, {
+        width: 100,
+        align: "center",
+        ellipsis: true,
+        height: cellHeight - 2 * padding,
+        lineGap: 3,
+      });
+      doc.rect(450, y, 50, cellHeight).stroke();
+      doc.text(row["ROUND"].toString(), 450, y + padding, {
+        width: 50,
+        align: "center",
+        ellipsis: true,
+        height: cellHeight - 2 * padding,
+        lineGap: 3,
+      });
+      doc.rect(500, y, 70, cellHeight).stroke();
+      doc.text(row["ChanceOfGetting"].toString(), 500, y + padding, {
+        width: 70,
+        align: "center",
+        ellipsis: true,
+        height: cellHeight - 2 * padding,
+        lineGap: 3,
+      });
 
-     doc.y += cellHeight;
-   }
-
+      doc.y += cellHeight;
+    }
 
     const itemsPerPage = 10;
     sortedResults.slice(0, 75).forEach((row, index) => {
