@@ -3,7 +3,7 @@ const path = require("path");
 const mysql = require("mysql2");
 const PDFDocument = require("pdfkit");
 require("dotenv").config();
-import { inject } from "@vercel/analytics";
+
 
 
 const app = express();
