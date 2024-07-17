@@ -24,10 +24,11 @@ connection.connect((err) => {
     return;
   }
   console.log("Connected to database as id " + connection.threadId);
+  injectSpeedInsights();
+  inject();
+
 });
 
-injectSpeedInsights();
-inject();
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}/`);
