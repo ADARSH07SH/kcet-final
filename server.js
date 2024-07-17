@@ -3,7 +3,7 @@ const path = require("path");
 const mysql = require("mysql2");
 const PDFDocument = require("pdfkit");
 require("dotenv").config();
-const { Analytics } = require("@vercel/analytics/react");
+
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  res.render("rank.ejs", { Analytics }); // Inject Analytics into the view
+  res.render("rank.ejs");
 });
 
 app.get("/list", (req, res) => {
