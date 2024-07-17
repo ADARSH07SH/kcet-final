@@ -3,7 +3,7 @@ const path = require("path");
 const mysql = require("mysql2");
 const PDFDocument = require("pdfkit");
 require("dotenv").config();
-import { injectSpeedInsights } from "@vercel/speed-insights";
+const { injectSpeedInsights } = require("@vercel/speed-insights");
 const { inject } = require("@vercel/analytics");
 
 
