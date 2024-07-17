@@ -25,10 +25,8 @@ connection.connect((err) => {
   }
   console.log("Connected to database as id " + connection.threadId);
 
-
-
   injectSpeedInsights({
-    sampleRate: 1.0, // Send all events (adjust based on your needs)
+    sampleRate: 1.0, // Send all events for testing
     beforeSend: (data) => {
       // Example of beforeSend usage
       if (data.url.includes("/sensitive-path")) {
@@ -38,9 +36,11 @@ connection.connect((err) => {
     },
     debug: process.env.NODE_ENV !== "production", // Enable debug in development
   });
-  inject();
-  
+  inject(); // Inject Vercel Analytics
 });
+  
+  
+
 
 
 app.listen(port, () => {
