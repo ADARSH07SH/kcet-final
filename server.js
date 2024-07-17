@@ -3,8 +3,7 @@ const path = require("path");
 const mysql = require("mysql2");
 const PDFDocument = require("pdfkit");
 require("dotenv").config();
-const { injectSpeedInsights } = require("@vercel/speed-insights");
-const { inject } = require("@vercel/analytics");
+import { inject } from "@vercel/analytics";
 
 
 const app = express();
@@ -24,21 +23,10 @@ connection.connect((err) => {
     return;
   }
   console.log("Connected to database as id " + connection.threadId);
-
-  injectSpeedInsights({
-    sampleRate: 1.0, // Send all events for testing
-    beforeSend: (data) => {
-      // Example of beforeSend usage
-      if (data.url.includes("/sensitive-path")) {
-        return null; // Ignore sensitive paths
-      }
-      return data; // Send other events as is
-    },
-    debug: process.env.NODE_ENV !== "production", // Enable debug in development
-  });
-  inject(); // Inject Vercel Analytics
+  inject();
 });
-  
+
+inject();
   
 
 
