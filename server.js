@@ -38,6 +38,8 @@ app.get("/", (req, res) => {
   res.render("rank.ejs");
 });
 
+<Analytics />;
+
 app.get("/list", (req, res) => {
   const { rank, category, preferredCourse, page = 1 } = req.query;
   const itemsPerPage = 40;
