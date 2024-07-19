@@ -22,6 +22,7 @@ connection.connect((err) => {
     return;
   }
   console.log("Connected to database as id " + connection.threadId);
+  inject();
 });
 
 app.listen(port, () => {
