@@ -89,6 +89,7 @@ app.get("/list", (req, res) => {
         "'DN B.Tech in VLSI'",
         "'DH B Tech in RAI'",
         "'BR BioMed. and Robotic Engg'",
+        "'BR BioMed. and Robotic Engg'",
       ].join(", ");
       break;
 
