@@ -3,8 +3,7 @@ const path = require("path");
 const mysql = require("mysql2");
 const PDFDocument = require("pdfkit");
 require("dotenv").config();
-
-
+import { inject } from "@vercel/analytics";
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -23,13 +22,7 @@ connection.connect((err) => {
     return;
   }
   console.log("Connected to database as id " + connection.threadId);
-  
 });
-
-
-  
-
-
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}/`);
@@ -88,7 +81,6 @@ app.get("/list", (req, res) => {
         "'CM B Tech in EV'",
         "'DN B.Tech in VLSI'",
         "'DH B Tech in RAI'",
-        "'BR BioMed. and Robotic Engg'",
         "'BR BioMed. and Robotic Engg'",
       ].join(", ");
       break;
