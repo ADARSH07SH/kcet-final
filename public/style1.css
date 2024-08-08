@@ -199,3 +199,15 @@ margin-top: 25px;
     pointer-events: none;
     color: #ccc;
 }
+
+.linkedin{
+     display: flex;
+    justify-content: center; 
+    align-items: center;
+    margin-top: 2%;
+}
+
+.low-opacity-image {
+    opacity: 0.75; 
+    width: 35px;
+}
